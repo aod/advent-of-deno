@@ -1,6 +1,6 @@
 type Node<T> = {
   val: T;
-  next?: Node<T>;
+  next: Node<T>;
 };
 
 class Circular<T> {
@@ -9,7 +9,7 @@ class Circular<T> {
   private last?: Node<T>;
 
   append(val: T): Node<T> {
-    let node: Node<T> = { val };
+    let node = { val } as Node<T>;
 
     if (!this.head) {
       node.next = node;
@@ -28,11 +28,8 @@ class Circular<T> {
 }
 
 function pickUpCups(cups: Circular<number>): [number, number, number] {
-  return [
-    cups.head?.next?.val as number,
-    cups.head?.next?.next?.val as number,
-    cups.head?.next?.next?.next?.val as number,
-  ];
+  const head = cups.head as Node<number>;
+  return [head.next.val, head.next.next.val, head.next.next.next.val];
 }
 
 type LookUp = { [key: number]: Node<number> };
@@ -55,7 +52,7 @@ function move(cups: Circular<number>, memo: LookUp) {
   const dest = destinationCup(cups, memo);
 
   let puHead = cups.head?.next as Node<number>;
-  let puTail = puHead.next?.next as Node<number>;
+  let puTail = puHead.next.next;
 
   (cups.head as Node<number>).next = puTail.next;
   puTail.next = dest.next;
@@ -67,52 +64,50 @@ function move(cups: Circular<number>, memo: LookUp) {
 function labels(cups: Circular<number>): string {
   let one = cups.head as Node<number>;
   while (one.val != 1) {
-    one = one?.next as Node<number>;
+    one = one.next;
   }
 
   let res = "";
-  let tmp = one.next as Node<number>;
+  let tmp = one.next;
   while (tmp !== one) {
     res += tmp.val;
-    tmp = tmp?.next as Node<number>;
+    tmp = tmp.next;
   }
 
   return res;
 }
 
-export default {
-  part1(input: string): string {
-    const memo: LookUp = {};
-    const cups = new Circular<number>();
-    for (const x of input.split("").map(Number)) {
-      memo[x] = cups.append(x);
-    }
+function part1(input: string): string {
+  const memo: LookUp = {};
+  const cups = new Circular<number>();
 
-    for (let i = 0; i < 100; i++) {
-      move(cups, memo);
-    }
+  for (const x of input.split("").map(Number)) {
+    memo[x] = cups.append(x);
+  }
 
-    return labels(cups);
-  },
+  for (let i = 0; i < 100; i++) {
+    move(cups, memo);
+  }
 
-  part2(input: string): string {
-    const memo: LookUp = {};
-    const cups = new Circular<number>();
+  return labels(cups);
+}
 
-    for (const x of input.split("").map(Number)) {
-      memo[x] = cups.append(x);
-    }
-    for (let i = cups.size + 1; i <= 1_000_000; i++) {
-      memo[i] = cups.append(i);
-    }
+function part2(input: string): string {
+  const memo: LookUp = {};
+  const cups = new Circular<number>();
 
-    for (let i = 0; i < 10_000_000; i++) {
-      move(cups, memo);
-    }
+  for (const x of input.split("").map(Number)) {
+    memo[x] = cups.append(x);
+  }
+  for (let i = cups.size + 1; i <= 1_000_000; i++) {
+    memo[i] = cups.append(i);
+  }
 
-    const one = memo[1];
-    const fst = one.next?.val as number;
-    const snd = one.next?.next?.val as number;
-    return "" + (fst * snd);
-  },
-};
+  for (let i = 0; i < 10_000_000; i++) {
+    move(cups, memo);
+  }
+
+  return "" + (memo[1].next.val * memo[1].next.next.val);
+}
+
+export default { part1, part2 };
