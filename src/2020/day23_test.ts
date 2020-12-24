@@ -11,6 +11,6 @@ Deno.test("2020-12-23/1", () => {
 Deno.test("2020-12-23/2", () => {
   assertEquals(
     day23.part2(Deno.readTextFileSync("inputs/2020/day23.txt")),
-    "12757828710",
+    12757828710,
   );
 });

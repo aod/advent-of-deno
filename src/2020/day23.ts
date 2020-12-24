@@ -5,18 +5,18 @@ type Node<T> = {
 
 class Circular<T> {
   public head?: Node<T>;
-  public size: number = 0;
+  public size = 0;
   private last?: Node<T>;
 
   append(val: T): Node<T> {
-    let node = { val } as Node<T>;
+    const node = { val } as Node<T>;
 
     if (!this.head) {
       node.next = node;
       this.head = node;
       this.last = node;
     } else {
-      let tmp = this.last as Node<T>;
+      const tmp = this.last as Node<T>;
       node.next = this.head;
       tmp.next = node;
       this.last = node;
@@ -51,8 +51,8 @@ function destinationCup(cups: Circular<number>, memo: LookUp): Node<number> {
 function move(cups: Circular<number>, memo: LookUp) {
   const dest = destinationCup(cups, memo);
 
-  let puHead = cups.head?.next as Node<number>;
-  let puTail = puHead.next.next;
+  const puHead = cups.head?.next as Node<number>;
+  const puTail = puHead.next.next;
 
   (cups.head as Node<number>).next = puTail.next;
   puTail.next = dest.next;
@@ -77,7 +77,7 @@ function labels(cups: Circular<number>): string {
   return res;
 }
 
-function part1(input: string): string {
+function part1(input: string) {
   const memo: LookUp = {};
   const cups = new Circular<number>();
 
@@ -92,7 +92,7 @@ function part1(input: string): string {
   return labels(cups);
 }
 
-function part2(input: string): string {
+function part2(input: string) {
   const memo: LookUp = {};
   const cups = new Circular<number>();
 
@@ -107,7 +107,7 @@ function part2(input: string): string {
     move(cups, memo);
   }
 
-  return "" + (memo[1].next.val * memo[1].next.next.val);
+  return memo[1].next.val * memo[1].next.next.val;
 }
 
 export default { part1, part2 };
