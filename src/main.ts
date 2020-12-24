@@ -7,22 +7,15 @@ const solutions = <YearSolutions> {
 
 const args = Deno.args;
 const [year, day] = args.slice(0, 2).map(Number);
-
 const inputFilePath = args[2];
-const inputContents = Deno.readTextFileSync(inputFilePath);
 
 const solution = solutions[year as AocYear][day as AoCDay];
+const inputContents = Deno.readTextFileSync(inputFilePath);
 
-{
+[solution.part1, solution.part2].forEach((sol, i) => {
+  const input = inputContents.slice();
   const t0 = performance.now();
-  const ans = solution.part1(inputContents);
+  const ans = sol(input);
   const t1 = performance.now();
-  console.log(`Part1(${(t1 - t0).toFixed(3)}ms): ${ans}`);
-}
-
-{
-  const t0 = performance.now();
-  const ans = solution.part2(inputContents);
-  const t1 = performance.now();
-  console.log(`Part2(${(t1 - t0).toFixed(3)}ms): ${ans}`);
-}
+  console.log(`Part${i + 1}(${(t1 - t0).toFixed(3)}ms): ${ans}`);
+});
