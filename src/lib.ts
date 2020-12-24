@@ -1,6 +1,6 @@
-export interface Solver {
-  part1(input: string): string;
-  part2(input: string): string;
+export interface Solver<Output = unknown> {
+  part1(input: string): Output;
+  part2(input: string): Output;
 }
 
 export type AocYear = 2015 | 2016 | 2017 | 2018 | 2019 | 2020;
