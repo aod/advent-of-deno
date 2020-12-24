@@ -1,4 +1,4 @@
-import { assertEquals } from "https://deno.land/std@0.82.0/testing/asserts.ts";
+import { assertEquals } from "../../deps.ts";
 import day23 from "./day23.ts";
 
 Deno.test("2020-12-23/1", () => {
