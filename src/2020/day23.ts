@@ -85,8 +85,7 @@ export default {
     const memo: LookUp = {};
     const cups = new Circular<number>();
     for (const x of input.split("").map(Number)) {
-      const n = cups.append(x);
-      memo[x] = n;
+      memo[x] = cups.append(x);
     }
 
     for (let i = 0; i < 100; i++) {
