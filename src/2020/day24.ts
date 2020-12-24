@@ -77,18 +77,8 @@ function nborCoords(tile: Tile): Coord[] {
   ) => [tile.coord[0] + x, tile.coord[1] + y, tile.coord[2] + z]);
 }
 
-function prepareTileFloor(tileFloor: TileFloor) {
-  const blackTiles = Object.values(tileFloor).filter((tile) =>
-    !tile.isWhiteTile
-  );
-  for (const blackTile of blackTiles) {
-    for (const mabyeWhiteTile of nborCoords(blackTile)) {
-      const coordHash = mabyeWhiteTile.join(",");
-      if (!(coordHash in tileFloor)) {
-        tileFloor[coordHash] = { coord: mabyeWhiteTile, isWhiteTile: true };
-      }
-    }
-  }
+function getBlackTiles(tileFloor: TileFloor): Tile[] {
+  return Object.values(tileFloor).filter((tile) => !tile.isWhiteTile);
 }
 
 function nbors(tile: Tile, tileFloor: TileFloor): number {
@@ -102,8 +92,7 @@ function nbors(tile: Tile, tileFloor: TileFloor): number {
   return res;
 }
 
-function part1(input: string) {
-  const instructions = parse(input);
+function flipTiles(instructions: Instruction[]): TileFloor {
   const tileFloor: TileFloor = {};
 
   for (const instr of instructions) {
@@ -119,28 +108,23 @@ function part1(input: string) {
     }
   }
 
-  return Object.values(tileFloor).filter((tile) => !tile.isWhiteTile).length;
+  return tileFloor;
 }
 
-function part2(input: string) {
-  const instructions = parse(input);
-  const tileFloor: TileFloor = {};
-
-  for (const instr of instructions) {
-    const { tile, steps } = instr;
-    moveTile(tile, steps);
-    const tileHash = tile.coord.join(",");
-
-    if (tileHash in tileFloor) {
-      tileFloor[tileHash].isWhiteTile = !tileFloor[tileHash].isWhiteTile;
-    } else {
-      tile.isWhiteTile = false;
-      tileFloor[tileHash] = tile;
+function prepareTileFloor(tileFloor: TileFloor) {
+  for (const blackTile of getBlackTiles(tileFloor)) {
+    for (const mabyeWhiteTile of nborCoords(blackTile)) {
+      const coordHash = mabyeWhiteTile.join(",");
+      if (!(coordHash in tileFloor)) {
+        tileFloor[coordHash] = { coord: mabyeWhiteTile, isWhiteTile: true };
+      }
     }
   }
+}
 
-  for (let i = 0; i < 100; i++) {
-    const tilesToFlip: Tile[] = [];
+function simulateDay(tileFloor: TileFloor, n: number): TileFloor {
+  for (let i = 0; i < n; i++) {
+    const tilesToFlip = [];
 
     prepareTileFloor(tileFloor);
     for (const tile of Object.values(tileFloor)) {
@@ -156,11 +140,13 @@ function part2(input: string) {
     for (const tile of tilesToFlip) {
       tile.isWhiteTile = !tile.isWhiteTile;
     }
-
-    tilesToFlip.length = 0;
   }
 
-  return Object.values(tileFloor).filter((tile) => !tile.isWhiteTile).length;
+  return tileFloor;
 }
 
-export default { part1, part2 };
+export default {
+  part1: (input: string) => getBlackTiles(flipTiles(parse(input))).length,
+  part2: (input: string) =>
+    getBlackTiles(simulateDay(flipTiles(parse(input)), 100)).length,
+};
