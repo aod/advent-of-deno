@@ -1,50 +1,31 @@
 import { Circular, Node } from "../ll.ts";
 
-function pickUpCups(cups: Circular<number>): [number, number, number] {
-  const head = cups.head as Node<number>;
-  return [head.next.val, head.next.next.val, head.next.next.next.val];
-}
-
-type LookUp = { [key: number]: Node<number> };
-
-function destinationCup(cups: Circular<number>, memo: LookUp): Node<number> {
-  let target = cups.head?.val as number;
-  const pickup = pickUpCups(cups);
+function destinationCup(cups: Circular<number>): number {
+  const head = cups.head!;
+  const pickup = [head.next.val, head.next.next.val, head.next.next.next.val];
+  let target = head.val;
 
   do {
     if (--target < 1) target = cups.size;
   } while (pickup.includes(target));
 
-  return memo[target];
+  return target;
 }
 
-function move(cups: Circular<number>, memo: LookUp) {
-  const dest = destinationCup(cups, memo);
+type LookUp = { [key: number]: Node<number> };
 
-  const puHead = cups.head?.next as Node<number>;
+function move(cups: Circular<number>, memo: LookUp) {
+  const dest = memo[destinationCup(cups)];
+  const head = cups.head!;
+
+  const puHead = head.next;
   const puTail = puHead.next.next;
 
-  (cups.head as Node<number>).next = puTail.next;
+  head.next = puTail.next;
   puTail.next = dest.next;
   dest.next = puHead;
 
-  cups.head = cups.head?.next;
-}
-
-function labels(cups: Circular<number>): string {
-  let one = cups.head as Node<number>;
-  while (one.val != 1) {
-    one = one.next;
-  }
-
-  let res = "";
-  let tmp = one.next;
-  while (tmp !== one) {
-    res += tmp.val;
-    tmp = tmp.next;
-  }
-
-  return res;
+  cups.head = head.next;
 }
 
 function part1(input: string) {
@@ -59,7 +40,8 @@ function part1(input: string) {
     move(cups, memo);
   }
 
-  return labels(cups);
+  cups.head = memo[1];
+  return [...cups].splice(1).join("");
 }
 
 function part2(input: string) {

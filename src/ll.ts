@@ -25,4 +25,13 @@ export class Circular<T> {
     this.size++;
     return node;
   }
+
+  *[Symbol.iterator]() {
+    if (!this.head) return;
+    let tmp = this.head;
+    do {
+      yield tmp.val;
+      tmp = tmp.next;
+    } while (tmp !== this.head);
+  }
 }
