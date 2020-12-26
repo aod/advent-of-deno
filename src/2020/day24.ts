@@ -22,12 +22,12 @@ function parse(input: string): Direction[][] {
     .map((matches) => matches.map((result) => result[0] as Direction));
 }
 
-function addCoord(a: Point, b: Point): Point {
+function addPoint(a: Point, b: Point): Point {
   return { x: a.x + b.x, y: a.y + b.y, z: a.z + b.z };
 }
 
-function nborPoints(coord: Point): Point[] {
-  return [...Object.values(POINT_DELTAS)].map(addCoord.bind(null, coord));
+function nborPoints(point: Point): Point[] {
+  return [...Object.values(POINT_DELTAS)].map(addPoint.bind(null, point));
 }
 
 function hashPoint({ x, y, z }: Point) {
@@ -36,8 +36,8 @@ function hashPoint({ x, y, z }: Point) {
 
 type BlackTiles = { [key: number]: Point };
 
-function blackNbors(tileFloor: BlackTiles, coord: Point): number {
-  return nborPoints(coord)
+function blackNbors(tileFloor: BlackTiles, point: Point): number {
+  return nborPoints(point)
     .map(hashPoint)
     .filter((pointHash) => pointHash in tileFloor)
     .length;
@@ -47,15 +47,15 @@ function flipTiles(lines: Direction[][]): BlackTiles {
   const blackTiles: BlackTiles = {};
 
   for (const steps of lines) {
-    const coord = steps
+    const point = steps
       .map((step) => POINT_DELTAS[step])
-      .reduce(addCoord);
+      .reduce(addPoint);
 
-    const coordHash = hashPoint(coord);
-    if (coordHash in blackTiles) {
-      delete blackTiles[coordHash];
+    const pointHash = hashPoint(point);
+    if (pointHash in blackTiles) {
+      delete blackTiles[pointHash];
     } else {
-      blackTiles[coordHash] = coord;
+      blackTiles[pointHash] = point;
     }
   }
 
@@ -73,14 +73,14 @@ function simulateDay(blackTiles: BlackTiles, n: number): BlackTiles {
 
   for (const candidate of candidates) {
     const nbors = blackNbors(blackTiles, candidate);
-    const coordHash = hashPoint(candidate);
-    const isBlackTile = coordHash in blackTiles;
+    const pointHash = hashPoint(candidate);
+    const isBlackTile = pointHash in blackTiles;
 
     if (
       (isBlackTile && (nbors == 1 || nbors == 2)) ||
       (!isBlackTile && nbors == 2)
     ) {
-      next[coordHash] = candidate;
+      next[pointHash] = candidate;
     }
   }
 
