@@ -1,31 +1,4 @@
-type Node<T> = {
-  val: T;
-  next: Node<T>;
-};
-
-class Circular<T> {
-  public head?: Node<T>;
-  public size = 0;
-  private last?: Node<T>;
-
-  append(val: T): Node<T> {
-    const node = { val } as Node<T>;
-
-    if (!this.head) {
-      node.next = node;
-      this.head = node;
-      this.last = node;
-    } else {
-      const tmp = this.last as Node<T>;
-      node.next = this.head;
-      tmp.next = node;
-      this.last = node;
-    }
-
-    this.size++;
-    return node;
-  }
-}
+import { Circular, Node } from "../ll.ts";
 
 function pickUpCups(cups: Circular<number>): [number, number, number] {
   const head = cups.head as Node<number>;
@@ -35,15 +8,12 @@ function pickUpCups(cups: Circular<number>): [number, number, number] {
 type LookUp = { [key: number]: Node<number> };
 
 function destinationCup(cups: Circular<number>, memo: LookUp): Node<number> {
-  let target = cups.head?.val as number - 1;
-  if (target < 1) {
-    target = cups.size;
-  }
-
+  let target = cups.head?.val as number;
   const pickup = pickUpCups(cups);
-  while (pickup.includes(target)) {
+
+  do {
     if (--target < 1) target = cups.size;
-  }
+  } while (pickup.includes(target));
 
   return memo[target];
 }
