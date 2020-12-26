@@ -1,152 +1,96 @@
 type Direction = "e" | "se" | "sw" | "w" | "nw" | "ne";
 
-type Coord = [number, number, number];
-type Tile = {
-  coord: Coord;
-  isWhiteTile: boolean;
+type Point = {
+  x: number;
+  y: number;
+  z: number;
 };
 
-const dirDeltas: { [key in Direction]: Coord } = {
-  "e": [1, -1, 0],
-  "se": [0, -1, 1],
-  "sw": [-1, 0, 1],
-  "w": [-1, 1, 0],
-  "nw": [0, 1, -1],
-  "ne": [1, 0, -1],
+// deno-fmt-ignore
+const POINT_DELTAS: { [key in Direction]: Point } = {
+  "e":  { x:  1, y: -1, z:  0 },
+  "se": { x:  0, y: -1, z:  1 },
+  "sw": { x: -1, y:  0, z:  1 },
+  "w":  { x: -1, y:  1, z:  0 },
+  "nw": { x:  0, y:  1, z: -1 },
+  "ne": { x:  1, y:  0, z: -1 },
 };
 
-function moveTile(tile: Tile, steps: Direction[]) {
-  for (const step of steps) {
-    const delta = dirDeltas[step];
-    tile.coord[0] += delta[0];
-    tile.coord[1] += delta[1];
-    tile.coord[2] += delta[2];
-  }
+function parse(input: string): Direction[][] {
+  return input.split("\n")
+    .map((lines) => [...lines.matchAll(/[sn]?[we]/g)])
+    .map((matches) => matches.map((result) => result[0] as Direction));
 }
 
-type Instruction = {
-  tile: Tile;
-  steps: Direction[];
-};
-
-function parse(input: string): Instruction[] {
-  const result: Instruction[] = [];
-
-  for (const line of input.split("\n")) {
-    const steps: Direction[] = [];
-    for (let i = 0; i <= line.length - 1; i++) {
-      const cur = line[i];
-
-      if (cur == "e" || cur == "w") {
-        steps.push(cur);
-      } else if (cur == "s") {
-        if (line[i + 1] == "e") {
-          steps.push("se");
-        } else {
-          steps.push("sw");
-        }
-        i++;
-      } else if (cur == "n") {
-        if (line[i + 1] == "e") {
-          steps.push("ne");
-        } else {
-          steps.push("nw");
-        }
-        i++;
-      }
-    }
-
-    result.push({ steps, tile: { isWhiteTile: true, coord: [0, 0, 0] } });
-  }
-
-  return result;
+function addCoord(a: Point, b: Point): Point {
+  return { x: a.x + b.x, y: a.y + b.y, z: a.z + b.z };
 }
 
-type TileFloor = { [key: string]: Tile };
-
-function nborCoords(tile: Tile): Coord[] {
-  return [
-    dirDeltas["e"],
-    dirDeltas["se"],
-    dirDeltas["sw"],
-    dirDeltas["w"],
-    dirDeltas["nw"],
-    dirDeltas["ne"],
-  ].map((
-    [x, y, z],
-  ) => [tile.coord[0] + x, tile.coord[1] + y, tile.coord[2] + z]);
+function nborPoints(coord: Point): Point[] {
+  return [...Object.values(POINT_DELTAS)].map(addCoord.bind(null, coord));
 }
 
-function getBlackTiles(tileFloor: TileFloor): Tile[] {
-  return Object.values(tileFloor).filter((tile) => !tile.isWhiteTile);
+function hashPoint({ x, y, z }: Point) {
+  return (x << 16) + (y << 8) + z;
 }
 
-function nbors(tile: Tile, tileFloor: TileFloor): number {
-  let res = 0;
-  for (const nborCoord of nborCoords(tile)) {
-    const coordHash = nborCoord.join(",");
-    if (coordHash in tileFloor && !tileFloor[coordHash].isWhiteTile) {
-      res++;
-    }
-  }
-  return res;
+type BlackTiles = { [key: number]: Point };
+
+function blackNbors(tileFloor: BlackTiles, coord: Point): number {
+  return nborPoints(coord)
+    .map(hashPoint)
+    .filter((pointHash) => pointHash in tileFloor)
+    .length;
 }
 
-function flipTiles(instructions: Instruction[]): TileFloor {
-  const tileFloor: TileFloor = {};
+function flipTiles(lines: Direction[][]): BlackTiles {
+  const blackTiles: BlackTiles = {};
 
-  for (const instr of instructions) {
-    const { tile, steps } = instr;
-    moveTile(tile, steps);
-    const tileHash = tile.coord.join(",");
+  for (const steps of lines) {
+    const coord = steps
+      .map((step) => POINT_DELTAS[step])
+      .reduce(addCoord);
 
-    if (tileHash in tileFloor) {
-      tileFloor[tileHash].isWhiteTile = !tileFloor[tileHash].isWhiteTile;
+    const coordHash = hashPoint(coord);
+    if (coordHash in blackTiles) {
+      delete blackTiles[coordHash];
     } else {
-      tile.isWhiteTile = false;
-      tileFloor[tileHash] = tile;
+      blackTiles[coordHash] = coord;
     }
   }
 
-  return tileFloor;
+  return blackTiles;
 }
 
-function prepareTileFloor(tileFloor: TileFloor) {
-  for (const blackTile of getBlackTiles(tileFloor)) {
-    for (const mabyeWhiteTile of nborCoords(blackTile)) {
-      const coordHash = mabyeWhiteTile.join(",");
-      if (!(coordHash in tileFloor)) {
-        tileFloor[coordHash] = { coord: mabyeWhiteTile, isWhiteTile: true };
-      }
-    }
+function simulateDay(blackTiles: BlackTiles, n: number): BlackTiles {
+  if (n === 0) {
+    return blackTiles;
   }
-}
 
-function simulateDay(tileFloor: TileFloor, n: number): TileFloor {
-  for (let i = 0; i < n; i++) {
-    const tilesToFlip = [];
+  const next: BlackTiles = {};
+  const candidates = [...Object.values(blackTiles)]
+    .flatMap((blackTile) => [blackTile, ...nborPoints(blackTile)]);
 
-    prepareTileFloor(tileFloor);
-    for (const tile of Object.values(tileFloor)) {
-      const count = nbors(tile, tileFloor);
-      if (
-        (tile.isWhiteTile && count == 2) ||
-        (!tile.isWhiteTile && (count == 0 || count > 2))
-      ) {
-        tilesToFlip.push(tile);
-      }
-    }
+  for (const candidate of candidates) {
+    const nbors = blackNbors(blackTiles, candidate);
+    const coordHash = hashPoint(candidate);
+    const isBlackTile = coordHash in blackTiles;
 
-    for (const tile of tilesToFlip) {
-      tile.isWhiteTile = !tile.isWhiteTile;
+    if (
+      (isBlackTile && (nbors == 1 || nbors == 2)) ||
+      (!isBlackTile && nbors == 2)
+    ) {
+      next[coordHash] = candidate;
     }
   }
 
-  return tileFloor;
+  return simulateDay(next, n - 1);
 }
 
+// deno-fmt-ignore
 export default {
-  part1: (input: string) => getBlackTiles(flipTiles(parse(input))).length,
+  part1: (input: string) =>
+    [...Object.keys(flipTiles(parse(input)))].length,
   part2: (input: string) =>
-    getBlackTiles(simulateDay(flipTiles(parse(input)), 100)).length,
+    [...Object.keys(simulateDay(flipTiles(parse(input)), 100))].length,
 };
