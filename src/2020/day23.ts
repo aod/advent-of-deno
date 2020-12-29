@@ -12,7 +12,7 @@ function destinationCup(cups: Circular<number>): number {
   return target;
 }
 
-type LookUp = { [key: number]: Node<number> };
+type LookUp = Record<number, Node<number>>;
 
 function move(cups: Circular<number>, memo: LookUp) {
   const dest = memo[destinationCup(cups)];

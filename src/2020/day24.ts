@@ -34,7 +34,7 @@ function hashPoint({ x, y, z }: Point) {
   return (x << 16) + (y << 8) + z;
 }
 
-type BlackTiles = { [key: number]: Point };
+type BlackTiles = Record<number, Point>;
 
 function blackNbors(tileFloor: BlackTiles, point: Point): number {
   return nborPoints(point)
