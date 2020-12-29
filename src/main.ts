@@ -1,21 +1,21 @@
 import AoC2020Solutions from "./2020/mod.ts";
-import { AoCDay, AocYear, YearSolutions } from "./lib.ts";
+import { Day, Year, YearSolutions } from "./aoc.ts";
 
 const solutions = <YearSolutions> {
   2020: AoC2020Solutions,
 };
 
 const args = Deno.args;
-const [year, day] = args.slice(0, 2).map(Number);
+const [year, day] = args.slice(0, 2).map(Number) as [Year, Day];
 const inputFilePath = args[2];
 
-const solution = solutions[year as AocYear][day as AoCDay];
+const solution = solutions[year][day];
 const inputContents = Deno.readTextFileSync(inputFilePath);
 
-[solution.part1, solution.part2].forEach((sol, i) => {
+[solution.part1, solution.part2].forEach((solve, i) => {
   const input = inputContents.slice();
   const t0 = performance.now();
-  const ans = sol(input);
-  const t1 = performance.now();
-  console.log(`Part${i + 1}(${(t1 - t0).toFixed(3)}ms): ${ans}`);
+  const ans = solve(input);
+  const ms = (performance.now() - t0).toFixed(3);
+  console.log(`Part${i + 1}(${ms}ms):\n${ans}`);
 });

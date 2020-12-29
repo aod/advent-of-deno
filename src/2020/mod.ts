@@ -1,4 +1,4 @@
-import { DaySolutions } from "../lib.ts";
+import { DaySolutions } from "../aoc.ts";
 import day23 from "./day23.ts";
 import day24 from "./day24.ts";
 import day25 from "./day25.ts";
