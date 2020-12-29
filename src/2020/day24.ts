@@ -27,7 +27,7 @@ function addPoint(a: Point, b: Point): Point {
 }
 
 function nborPoints(point: Point): Point[] {
-  return [...Object.values(POINT_DELTAS)].map(addPoint.bind(null, point));
+  return Object.values(POINT_DELTAS).map(addPoint.bind(null, point));
 }
 
 function hashPoint({ x, y, z }: Point) {
@@ -68,7 +68,7 @@ function simulateDay(blackTiles: BlackTiles, n: number): BlackTiles {
   }
 
   const next: BlackTiles = {};
-  const candidates = [...Object.values(blackTiles)]
+  const candidates = Object.values(blackTiles)
     .flatMap((blackTile) => [blackTile, ...nborPoints(blackTile)]);
 
   for (const candidate of candidates) {
@@ -90,7 +90,7 @@ function simulateDay(blackTiles: BlackTiles, n: number): BlackTiles {
 // deno-fmt-ignore
 export default {
   part1: (input: string) =>
-    [...Object.keys(flipTiles(parse(input)))].length,
+    Object.keys(flipTiles(parse(input))).length,
   part2: (input: string) =>
-    [...Object.keys(simulateDay(flipTiles(parse(input)), 100))].length,
+    Object.keys(simulateDay(flipTiles(parse(input)), 100)).length,
 };
