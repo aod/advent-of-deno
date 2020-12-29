@@ -7,7 +7,7 @@ type Point = {
 };
 
 // deno-fmt-ignore
-const POINT_DELTAS: { [key in Direction]: Point } = {
+const POINT_DELTAS: Record<Direction, Point> = {
   "e":  { x:  1, y: -1, z:  0 },
   "se": { x:  0, y: -1, z:  1 },
   "sw": { x: -1, y:  0, z:  1 },
