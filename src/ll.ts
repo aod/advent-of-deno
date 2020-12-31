@@ -9,25 +9,30 @@ export interface CircularNode<T> extends Node<T> {
 
 export class CircularList<T> {
   public head?: CircularNode<T>;
-  public size = 0;
-  private last?: CircularNode<T>;
 
-  append(val: T): CircularNode<T> {
+  private _length = 0;
+  private _last?: CircularNode<T>;
+
+  push(val: T): CircularNode<T> {
     const node = { val } as CircularNode<T>;
 
-    if (!this.head || !this.last) {
+    if (!this.head || !this._last) {
       node.next = node;
       this.head = node;
-      this.last = node;
+      this._last = node;
     } else {
-      const tmp = this.last;
+      const tmp = this._last;
       node.next = this.head;
       tmp.next = node;
-      this.last = node;
+      this._last = node;
     }
 
-    this.size++;
+    this._length++;
     return node;
+  }
+
+  get length() {
+    return this._length;
   }
 
   *[Symbol.iterator]() {

@@ -6,7 +6,7 @@ function destinationCup(cups: CircularList<number>): number {
   let target = head.val;
 
   do {
-    if (--target < 1) target = cups.size;
+    if (--target < 1) target = cups.length;
   } while (pickup.includes(target));
 
   return target;
@@ -33,7 +33,7 @@ function part1(input: string) {
   const cups = new CircularList<number>();
 
   for (const x of input.split("").map(Number)) {
-    memo[x] = cups.append(x);
+    memo[x] = cups.push(x);
   }
 
   for (let i = 0; i < 100; i++) {
@@ -49,10 +49,10 @@ function part2(input: string) {
   const cups = new CircularList<number>();
 
   for (const x of input.split("").map(Number)) {
-    memo[x] = cups.append(x);
+    memo[x] = cups.push(x);
   }
-  for (let i = cups.size + 1; i <= 1_000_000; i++) {
-    memo[i] = cups.append(i);
+  for (let i = cups.length + 1; i <= 1_000_000; i++) {
+    memo[i] = cups.push(i);
   }
 
   for (let i = 0; i < 10_000_000; i++) {
