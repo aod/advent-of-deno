@@ -11,12 +11,12 @@ export class Circular<T> {
   append(val: T): Node<T> {
     const node = { val } as Node<T>;
 
-    if (!this.head) {
+    if (!this.head || !this.last) {
       node.next = node;
       this.head = node;
       this.last = node;
     } else {
-      const tmp = this.last as Node<T>;
+      const tmp = this.last;
       node.next = this.head;
       tmp.next = node;
       this.last = node;
