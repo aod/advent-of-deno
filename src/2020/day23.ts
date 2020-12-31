@@ -1,6 +1,6 @@
-import { Circular, Node } from "../ll.ts";
+import { CircularList, CircularNode } from "../ll.ts";
 
-function destinationCup(cups: Circular<number>): number {
+function destinationCup(cups: CircularList<number>): number {
   const head = cups.head!;
   const pickup = [head.next.val, head.next.next.val, head.next.next.next.val];
   let target = head.val;
@@ -12,9 +12,9 @@ function destinationCup(cups: Circular<number>): number {
   return target;
 }
 
-type LookUp = Record<number, Node<number>>;
+type LookUp = Record<number, CircularNode<number>>;
 
-function move(cups: Circular<number>, memo: LookUp) {
+function move(cups: CircularList<number>, memo: LookUp) {
   const dest = memo[destinationCup(cups)];
   const head = cups.head!;
 
@@ -30,7 +30,7 @@ function move(cups: Circular<number>, memo: LookUp) {
 
 function part1(input: string) {
   const memo: LookUp = {};
-  const cups = new Circular<number>();
+  const cups = new CircularList<number>();
 
   for (const x of input.split("").map(Number)) {
     memo[x] = cups.append(x);
@@ -46,7 +46,7 @@ function part1(input: string) {
 
 function part2(input: string) {
   const memo: LookUp = {};
-  const cups = new Circular<number>();
+  const cups = new CircularList<number>();
 
   for (const x of input.split("").map(Number)) {
     memo[x] = cups.append(x);

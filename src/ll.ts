@@ -1,15 +1,19 @@
-export type Node<T> = {
+export interface Node<T> {
   val: T;
-  next: Node<T>;
+  next?: this;
 };
 
-export class Circular<T> {
-  public head?: Node<T>;
-  public size = 0;
-  private last?: Node<T>;
+export interface CircularNode<T> extends Node<T> {
+  next: this;
+}
 
-  append(val: T): Node<T> {
-    const node = { val } as Node<T>;
+export class CircularList<T> {
+  public head?: CircularNode<T>;
+  public size = 0;
+  private last?: CircularNode<T>;
+
+  append(val: T): CircularNode<T> {
+    const node = { val } as CircularNode<T>;
 
     if (!this.head || !this.last) {
       node.next = node;
