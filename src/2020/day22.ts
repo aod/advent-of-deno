@@ -21,15 +21,12 @@ function part1(input: string) {
   const [d1, d2] = parse(input);
 
   while (d1.length && d2.length) {
-    const c1 = d1.shift()!;
-    const c2 = d2.shift()!;
+    const [c1, c2] = [d1.shift()!, d2.shift()!]
 
     if (c1 > c2) {
-      d1.push(c1);
-      d1.push(c2);
+      d1.push(c1, c2);
     } else {
-      d2.push(c2);
-      d2.push(c1);
+      d2.push(c2, c1);
     }
   }
 
