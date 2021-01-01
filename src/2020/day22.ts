@@ -21,7 +21,7 @@ function part1(input: string) {
   const [d1, d2] = parse(input);
 
   while (d1.length && d2.length) {
-    const [c1, c2] = [d1.shift()!, d2.shift()!]
+    const [c1, c2] = [d1.shift()!, d2.shift()!];
 
     if (c1 > c2) {
       d1.push(c1, c2);
@@ -33,21 +33,22 @@ function part1(input: string) {
   return score(d1.length > 0 ? d1 : d2);
 }
 
-function deckEquals(a: Deck, b: Deck): boolean {
-  return a.length === b.length && a.every((val, i) => val === b[i]);
-}
+type RoundHash = string;
 
-function roundEquals([a1, a2]: Round, [b1, b2]: Round): boolean {
-  return deckEquals(a1, b1) && deckEquals(a2, b2);
+function hashRound([a, b]: Round): RoundHash {
+  return `${a.join(",")}|${b.join(",")}`;
 }
 
 /** Returns true if the first deck wins the game. */
 function recursiveCombat(d1: Deck, d2: Deck): boolean {
-  const previousRounds: Round[] = [[[], []]];
+  let roundHash = hashRound([d1, d2]);
+  const previousRounds = new Set<RoundHash>();
 
   while (d1.length && d2.length) {
-    if (previousRounds.some(roundEquals.bind(null, [d1, d2]))) return true;
-    previousRounds.push([d1.slice(), d2.slice()]);
+    if (previousRounds.has(roundHash)) {
+      return true;
+    }
+    previousRounds.add(roundHash);
 
     const c1 = d1.shift()!;
     const c2 = d2.shift()!;
@@ -62,6 +63,8 @@ function recursiveCombat(d1: Deck, d2: Deck): boolean {
     } else {
       d2.push(c2, c1);
     }
+
+    roundHash = hashRound([d1, d2]);
   }
 
   return d1.length > 0;
