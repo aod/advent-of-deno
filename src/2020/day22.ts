@@ -1,11 +1,16 @@
 type Card = number;
 type Deck = Card[];
-type Round = [Deck, Deck];
 
-function parse(input: string): Round {
+type Game = [Deck, Deck];
+type GameHash = string;
+
+type PlayerTurn = [Deck, Card];
+type Round = [PlayerTurn, PlayerTurn];
+
+function parse(input: string): Game {
   return input.split("\n\n")
     .map((playerDeck) => playerDeck.split("\n").slice(1))
-    .map((cards) => cards.map(Number)) as Round;
+    .map((cards) => cards.map(Number)) as Game;
 }
 
 function score(deck: Deck): number {
@@ -17,63 +22,56 @@ function score(deck: Deck): number {
   return result;
 }
 
-function part1(input: string) {
-  const [d1, d2] = parse(input);
-
+function simulateCombat(game: Game): Deck {
+  const [d1, d2] = game.map((deck) => deck.slice());
   while (d1.length && d2.length) {
     const [c1, c2] = [d1.shift()!, d2.shift()!];
-
-    if (c1 > c2) {
-      d1.push(c1, c2);
-    } else {
-      d2.push(c2, c1);
-    }
+    if (c1 > c2) d1.push(c1, c2);
+    else d2.push(c2, c1);
   }
-
-  return score(d1.length > 0 ? d1 : d2);
+  return d1.length > 0 ? d1 : d2;
 }
 
-type RoundHash = string;
+function part1(input: string) {
+  return score(simulateCombat(parse(input)));
+}
 
-function hashRound([a, b]: Round): RoundHash {
+function hashGame([a, b]: Game): GameHash {
   return `${a.join(",")}|${b.join(",")}`;
 }
 
-/** Returns true if the first deck wins the game. */
-function recursiveCombat(d1: Deck, d2: Deck): boolean {
-  let roundHash = hashRound([d1, d2]);
-  const previousRounds = new Set<RoundHash>();
+function shouldPlaySubGame([[d1, c1], [d2, c2]]: Round): boolean {
+  return c1 <= d1.length && c2 <= d2.length;
+}
 
-  while (d1.length && d2.length) {
-    if (previousRounds.has(roundHash)) {
-      return true;
-    }
-    previousRounds.add(roundHash);
+function simulateRecursiveCombat(game: Game): Deck {
+  /** Returns true if the first deck wins the game. */
+  function recursiveCombat([d1, d2]: Game): boolean {
+    const prevGameStates = new Set<GameHash>();
 
-    const c1 = d1.shift()!;
-    const c2 = d2.shift()!;
+    do {
+      const [c1, c2] = [d1.shift()!, d2.shift()!];
+      const won = shouldPlaySubGame([[d1, c1], [d2, c2]])
+        ? recursiveCombat([d1.slice(0, c1), d2.slice(0, c2)])
+        : c1 > c2;
 
-    const shouldPlaySubGame = c1 <= d1.length && c2 <= d2.length;
-    const won = shouldPlaySubGame
-      ? recursiveCombat(d1.slice(0, c1), d2.slice(0, c2))
-      : c1 > c2;
+      if (won) d1.push(c1, c2);
+      else d2.push(c2, c1);
 
-    if (won) {
-      d1.push(c1, c2);
-    } else {
-      d2.push(c2, c1);
-    }
+      const gameHash = hashGame([d1, d2]);
+      if (prevGameStates.has(gameHash)) return true;
+      prevGameStates.add(gameHash);
+    } while (d1.length && d2.length);
 
-    roundHash = hashRound([d1, d2]);
+    return d1.length > 0;
   }
 
-  return d1.length > 0;
+  const [d1, d2] = game.map((deck) => deck.slice());
+  return recursiveCombat([d1, d2]) ? d1 : d2;
 }
 
 function part2(input: string) {
-  const [d1, d2] = parse(input);
-  const winner = recursiveCombat(d1, d2) ? d1 : d2;
-  return score(winner);
+  return score(simulateRecursiveCombat(parse(input)));
 }
 
 export default { part1, part2 };
