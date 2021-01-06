@@ -7,10 +7,14 @@ const solutions = <YearSolutions> {
 
 const args = Deno.args;
 const [year, day] = args.slice(0, 2).map(Number) as [Year, Day];
-const inputFilePath = args[2];
 
 const solution = solutions[year][day];
-const inputContents = Deno.readTextFileSync(inputFilePath);
+const inputContents: string = (() => {
+  if (args.length <= 2) {
+    return new TextDecoder().decode(Deno.readAllSync(Deno.stdin)).trim();
+  }
+  return Deno.readTextFileSync(args[2]);
+})();
 
 [solution.part1, solution.part2].forEach((solve, i) => {
   const input = inputContents.slice();
