@@ -1,8 +1,10 @@
 import AoC2020Solutions from "./2020/mod.ts";
+import AoC2022Solutions from "./2022/mod.ts";
 import { Day, Year, YearSolutions } from "./aoc.ts";
 
 const solutions = <YearSolutions> {
   2020: AoC2020Solutions,
+  2022: AoC2022Solutions,
 };
 
 const args = Deno.args;
