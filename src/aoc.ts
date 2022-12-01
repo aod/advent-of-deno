@@ -3,7 +3,7 @@ export interface Solver {
   part2(input: string): unknown;
 }
 
-export type Year = 2015 | 2016 | 2017 | 2018 | 2019 | 2020;
+export type Year = 2015 | 2016 | 2017 | 2018 | 2019 | 2020 | 2021 | 2022;
 // deno-fmt-ignore
 export type Day =
   |  1 |  2 |  3 |  4 |  5
@@ -16,5 +16,7 @@ export type DaySolutions = Record<Day, Solver>;
 export type YearSolutions = Record<Year, DaySolutions>;
 
 export function input(year: Year, day: Day, suffix?: string) {
-  return Deno.readTextFileSync(`inputs/${year}/day${day}${suffix || ""}.txt`);
+  return Deno.readTextFileSync(
+    `inputs/${year}/day${("" + day).padStart(2, "0")}${suffix || ""}.txt`,
+  );
 }
