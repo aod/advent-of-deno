@@ -15,7 +15,7 @@ Install [Deno](https://deno.land/#installation) and make sure `deno` is availabl
 ### 2. Run a solution
 
 ```
-deno run --allow-read --allow-hrtime src/main.ts <year> <day> [input-file-path]
+deno run --allow-read=inputs/ --allow-hrtime src/main.ts <year> <day> [input-file-path]
 ```
 
 _(Omit the last argument to read the puzzle input from stdin.)_
@@ -23,7 +23,7 @@ _(Omit the last argument to read the puzzle input from stdin.)_
 Example:
 
 ```
-deno run --allow-read --allow-hrtime src/main.ts 2020 23 inputs/2020/day23.txt
+deno run --allow-read=inputs/ --allow-hrtime src/main.ts 2020 23 inputs/2020/day23.txt
 ```
 
 Example output:
