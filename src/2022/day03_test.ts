@@ -10,10 +10,10 @@ Deno.test("22-03a", () => {
   assertEquals(day03.part1(input(2022, 3)), 8252);
 });
 
-Deno.test("22-03b-ex1", { ignore: true }, () => {
-  assertEquals(day03.part2(input(2022, 2, "-ex1")), Infinity);
+Deno.test("22-03b-ex1", () => {
+  assertEquals(day03.part2(input(2022, 3, "-ex1")), 70);
 });
 
-Deno.test("22-03b", { ignore: true }, () => {
-  assertEquals(day03.part2(input(2022, 2)), Infinity);
+Deno.test("22-03b", () => {
+  assertEquals(day03.part2(input(2022, 3)), 2828);
 });
