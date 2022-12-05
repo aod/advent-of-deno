@@ -14,23 +14,38 @@ Install [Deno](https://deno.land/#installation) and make sure `deno` is availabl
 
 ### 2. Run a solution
 
-```
-deno run --allow-read=inputs/ --allow-hrtime src/main.ts <year> <day> [input-file-path]
-```
-
-_(Omit the last argument to read the puzzle input from stdin.)_
-
-Example:
+Synopsis:
 
 ```
-deno run --allow-read=inputs/ --allow-hrtime src/main.ts 2020 23 inputs/2020/day23.txt
+src/main.ts <year> <day> [input-file-path]
 ```
 
-Example output:
+_Run the main file without arguments to see the full usage description._
+
+---
+
+Simple example:
 
 ```
-Part1(0.264ms): 24798635
-Part2(2487.216ms): 12757828710
+./src/main.ts 2022 3 inputs/2022/day03.txt
+```
+
+Output:
+
+```
+[AOC 2022/3]
+Part1(2.484ms):
+8252
+Part2(0.896ms):
+2828
+```
+
+---
+
+A more secure and verbose example:
+
+```
+deno run --allow-read=inputs/,src/ --allow-hrtime src/main.ts 2022 3 inputs/2022/day03.txt
 ```
 
 #### 2.1 Without cloning the repo
