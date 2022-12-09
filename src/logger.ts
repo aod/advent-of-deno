@@ -6,6 +6,6 @@ export function logger() {
 
 export class NoopLogger extends BaseHandler {
   constructor() {
-    super("NOTSET")
+    super("NOTSET");
   }
 }

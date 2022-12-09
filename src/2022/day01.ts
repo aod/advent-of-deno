@@ -1,4 +1,4 @@
-import { sumOf } from "../deps.ts"
+import { sumOf } from "../deps.ts";
 
 type Calories = number;
 type Snack = Calories;

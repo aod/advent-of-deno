@@ -22,6 +22,6 @@ export function input(year: Year, day: Day, suffix?: string) {
   const s = suffix ?? "";
   const resolvedFileURL = import.meta.resolve(`../inputs/${y}/day${d}${s}.txt`);
   const inputPath = path.fromFileUrl(resolvedFileURL);
-  logger().debug(`Reading input from ${inputPath}`)
+  logger().debug(`Reading input from ${inputPath}`);
   return Deno.readTextFileSync(inputPath);
 }
