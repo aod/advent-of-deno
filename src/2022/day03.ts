@@ -1,12 +1,13 @@
-import { windows } from "../iter.ts";
-import { sum } from "../math.ts";
-import { intersection } from "../set.ts";
+import { chunk } from "https://deno.land/std@0.167.0/collections/chunk.ts";
+import { intersect } from "https://deno.land/std@0.167.0/collections/intersect.ts";
+import { sumOf } from "https://deno.land/std@0.167.0/collections/sum_of.ts";
+
 import { Character } from "../string.ts";
 
 type Item = Character;
 type Items = Character[];
 
-type LargeCompartment = Set<Item>;
+type LargeCompartment = Item[];
 
 interface Rugsack {
   items: Items;
@@ -23,8 +24,8 @@ function intoRugsack(line: string): Rugsack {
     compartments() {
       const middle = Math.floor(this.items.length / 2);
       return [
-        new Set(this.items.slice(0, middle)),
-        new Set(this.items.slice(middle)),
+        this.items.slice(0, middle),
+        this.items.slice(middle),
       ];
     },
   };
@@ -41,23 +42,24 @@ function priority(item: string) {
 function part1(input: string) {
   const rugsacks = parse(input);
   const commonItems = rugsacks.map((rugsack) =>
-    intersection(...rugsack.compartments())
+    intersect(...rugsack.compartments())
   );
   const priorities = commonItems.flatMap((items) => [...items].map(priority));
-  return sum(...priorities);
+  return sumOf(priorities, (i) => i);
 }
 
 function findBadge(group: Rugsack[]): Item {
-  const badge = intersection(...group.map((rugsack) => new Set(rugsack.items)));
+  const badge = intersect(...group.map((rugsack) => rugsack.items));
   return badge.values().next().value;
 }
 
 function part2(input: string) {
   const GROUP_SIZE = 3;
-  return sum(
-    ...[...windows(parse(input), GROUP_SIZE)]
-      .map(findBadge)
+  return sumOf(
+    chunk(parse(input), GROUP_SIZE)
+      .flatMap(findBadge)
       .map(priority),
+    (i) => i,
   );
 }
 

@@ -1,4 +1,4 @@
-import { sum } from "../math.ts";
+import { sumOf } from "https://deno.land/std@0.167.0/collections/sum_of.ts";
 
 type Calories = number;
 type Snack = Calories;
@@ -13,7 +13,7 @@ function parse(input: string): ElfInventories {
 }
 
 function totalCalories(snacks: Snacks): Calories {
-  return sum(...snacks);
+  return sumOf(snacks, (i) => i);
 }
 
 function part1(input: string) {
@@ -25,8 +25,9 @@ function compareCalories(a: Calories, b: Calories) {
 }
 
 function part2(input: string) {
-  return sum(
-    ...parse(input).map(totalCalories).sort(compareCalories).slice(0, 3),
+  return sumOf(
+    parse(input).map(totalCalories).sort(compareCalories).slice(0, 3),
+    (i) => i,
   );
 }
 

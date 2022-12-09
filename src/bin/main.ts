@@ -1,4 +1,4 @@
-#!/usr/bin/env -S deno run --allow-read --allow-hrtime
+#!/usr/bin/env -S deno run --allow-read --allow-hrtime --allow-net=deno.land
 
 import { Day, Year } from "../aoc.ts";
 import { getErrorMessage } from "../catch.ts";

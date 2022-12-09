@@ -1,11 +1,11 @@
-import { sum } from "../math.ts"
+import { sumOf } from "https://deno.land/std@0.167.0/collections/sum_of.ts";
 
-const LOSE = 0
-const DRAW = 3
-const WIN = 6
-const R = 1
-const P = 2
-const S = 3
+const LOSE = 0;
+const DRAW = 3;
+const WIN = 6;
+const R = 1;
+const P = 2;
+const S = 3;
 
 const points: Record<string, number> = {
   "A X": R + DRAW,
@@ -19,10 +19,10 @@ const points: Record<string, number> = {
   "C X": R + WIN,
   "C Y": P + LOSE,
   "C Z": S + DRAW,
-}
+};
 
 function part1(input: string) {
-  return sum(...input.split("\n").map(line => points[line]))
+  return sumOf(input.split("\n").map((line) => points[line]), (i) => i);
 }
 
 const choose: Record<string, string> = {
@@ -36,11 +36,11 @@ const choose: Record<string, string> = {
 
   "C X": "C Y",
   "C Y": "C Z",
-  "C Z": "C X"
-}
+  "C Z": "C X",
+};
 
 function part2(input: string) {
-  return sum(...input.split("\n").map(line => points[choose[line]]))
+  return sumOf(input.split("\n").map((line) => points[choose[line]]), (i) => i);
 }
 
 export default { part1, part2 };
