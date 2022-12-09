@@ -1,7 +1,4 @@
-import { chunk } from "https://deno.land/std@0.167.0/collections/chunk.ts";
-import { intersect } from "https://deno.land/std@0.167.0/collections/intersect.ts";
-import { sumOf } from "https://deno.land/std@0.167.0/collections/sum_of.ts";
-
+import { chunk, intersect, sumOf } from "../deps.ts";
 import { Character } from "../string.ts";
 
 type Item = Character;

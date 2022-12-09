@@ -1,4 +1,4 @@
-import { assertEquals } from "../../deps.ts";
+import { assertEquals } from "../deps.ts";
 import { input } from "../aoc.ts";
 import day24 from "./day24.ts";
 

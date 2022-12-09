@@ -1,7 +1,6 @@
 #!/usr/bin/env -S deno run --allow-read --allow-write
 
-import * as path from "https://deno.land/std@0.167.0/path/mod.ts";
-import { ensureFile } from "https://deno.land/std@0.167.0/fs/mod.ts";
+import { ensureFile, path } from "../deps.ts";
 
 if (Deno.args.length < 2) {
   console.error("Please provide the year and day of the new solution");
@@ -28,7 +27,7 @@ function part2(_input: string) {
 export default { part1, part2 };
 `;
 
-const testTemplate = `import { assertEquals } from "../../deps.ts";
+const testTemplate = `import { assertEquals } from "../deps.ts";
 import { input } from "../aoc.ts";
 import day${dayPadded} from "./day${dayPadded}.ts";
 

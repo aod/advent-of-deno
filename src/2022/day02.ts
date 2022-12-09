@@ -1,4 +1,4 @@
-import { sumOf } from "https://deno.land/std@0.167.0/collections/sum_of.ts";
+import { sumOf } from "../deps.ts";
 
 const LOSE = 0;
 const DRAW = 3;
