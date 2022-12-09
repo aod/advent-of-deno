@@ -1,3 +1,4 @@
+import { windows } from "../iter.ts";
 import { sum } from "../math.ts";
 import { intersection } from "../set.ts";
 import { Character } from "../string.ts";
@@ -46,17 +47,18 @@ function part1(input: string) {
   return sum(...priorities);
 }
 
+function findBadge(group: Rugsack[]): Item {
+  const badge = intersection(...group.map((rugsack) => new Set(rugsack.items)));
+  return badge.values().next().value;
+}
+
 function part2(input: string) {
   const GROUP_SIZE = 3;
-  const rugsacks = parse(input);
-  let result = 0
-  for (let i = 0; i <= rugsacks.length - GROUP_SIZE; i += GROUP_SIZE) {
-    const group = rugsacks.slice(i, i + GROUP_SIZE).map((rugsack) => new Set(rugsack.items))
-    const badges = intersection(...group);
-    const priorities = [...badges].map(priority)
-    result += sum(...priorities)
-  }
-  return result
+  return sum(
+    ...[...windows(parse(input), GROUP_SIZE)]
+      .map(findBadge)
+      .map(priority),
+  );
 }
 
 export default { part1, part2 };
