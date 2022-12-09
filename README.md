@@ -17,7 +17,7 @@ Install [Deno](https://deno.land/#installation) and make sure `deno` is availabl
 Synopsis:
 
 ```
-src/main.ts <year> <day> [input-file-path]
+src/bin/main.ts <year> <day> [input-file-path]
 ```
 
 _Run the main file without arguments to see the full usage description._
@@ -27,7 +27,7 @@ _Run the main file without arguments to see the full usage description._
 Simple example:
 
 ```
-./src/main.ts 2022 3 inputs/2022/day03.txt
+src/bin/main.ts 2022 3 inputs/2022/day03.txt
 ```
 
 Output:
@@ -45,7 +45,7 @@ Part2(0.896ms):
 A more secure and verbose example:
 
 ```
-deno run --allow-read=inputs/,src/ --allow-hrtime src/main.ts 2022 3 inputs/2022/day03.txt
+deno run --allow-read=inputs/,src/ --allow-hrtime src/bin/main.ts 2022 3 inputs/2022/day03.txt
 ```
 
 #### 2.1 Without cloning the repo
@@ -59,7 +59,7 @@ The equivalent command of the example above without cloning the repo would be:
 curl -s \
     https://raw.githubusercontent.com/aod/advent-of-deno/main/inputs/2020/day23.txt \
 | deno run --allow-hrtime \
-    https://raw.githubusercontent.com/aod/advent-of-deno/main/src/main.ts \
+    https://raw.githubusercontent.com/aod/advent-of-deno/main/src/bin/main.ts \
     2020 \
     23
 ```

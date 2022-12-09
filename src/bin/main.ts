@@ -1,7 +1,7 @@
 #!/usr/bin/env -S deno run --allow-read --allow-hrtime
 
-import { Day, Year } from "./aoc.ts";
-import { getErrorMessage } from "./catch.ts";
+import { Day, Year } from "../aoc.ts";
+import { getErrorMessage } from "../catch.ts";
 
 const args = Deno.args;
 
@@ -22,7 +22,7 @@ if (args.length < 2) {
 const [year, day] = args.slice(0, 2).map(Number) as [Year, Day];
 
 const path = import.meta.resolve(
-  `./${year}/day${("" + day).padStart(2, "0")}.ts`,
+  `../${year}/day${("" + day).padStart(2, "0")}.ts`,
 );
 const { default: solution } = await import(path).catch(() => {
   console.error(`advent-of-deno: couldn't import ${path}`);
