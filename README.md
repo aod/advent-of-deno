@@ -17,40 +17,38 @@ Install [Deno](https://deno.land/#installation) and make sure `deno` is availabl
 Synopsis:
 
 ```
-src/bin/main.ts <year> <day> [input-file-path]
+src/bin/main.ts [--input-file <filepath> | --input-stdin] [--file-logging] <year> <day>
 ```
-
-_Run the main file without arguments to see the full usage description._
 
 ---
 
-Simple example:
+Example:
 
 ```
-src/bin/main.ts 2022 3 inputs/2022/day03.txt
+src/bin/main.ts 2022 3
 ```
 
 Output:
 
 ```
-[AOC 2022/3]
-Part1(2.484ms):
-8252
-Part2(0.896ms):
-2828
+[18:42:27.958][INFO] AOC 2022/3
+[18:42:27.975][INFO] Ran part 1 in 1.777ms:
+[18:42:27.976][INFO] 8252
+[18:42:27.978][INFO] Ran part 2 in 2.011ms:
+[18:42:27.978][INFO] 2828
 ```
 
 ---
 
-A more secure and verbose example:
+A more secure but also verbose example would be:
 
 ```
-deno run --allow-read=inputs/,src/ --allow-hrtime src/bin/main.ts 2022 3 inputs/2022/day03.txt
+deno run --allow-read=inputs/,src/ --allow-hrtime src/bin/main.ts 2022 3
 ```
 
 #### 2.1 Without cloning the repo
 
-Replace `src/main.ts` with `https://raw.githubusercontent.com/aod/advent-of-deno/main/src/main.ts`
+Replace `src/bin/main.ts` with `https://raw.githubusercontent.com/aod/advent-of-deno/main/src/bin/main.ts`
 to run a solution without having to clone the repo.
 
 The equivalent command of the example above without cloning the repo would be:
@@ -58,8 +56,8 @@ The equivalent command of the example above without cloning the repo would be:
 ```
 curl -s \
     https://raw.githubusercontent.com/aod/advent-of-deno/main/inputs/2020/day23.txt \
-| deno run --allow-hrtime \
-    https://raw.githubusercontent.com/aod/advent-of-deno/main/src/bin/main.ts \
+| deno run --allow-hrtime --allow-net=raw.githubusercontent.com,deno.land \
+    https://raw.githubusercontent.com/aod/advent-of-deno/main/src/bin/main.ts --input-stdin \
     2020 \
     23
 ```
