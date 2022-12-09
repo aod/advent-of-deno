@@ -1,7 +1,7 @@
 export interface Node<T> {
   val: T;
   next?: this;
-};
+}
 
 export interface CircularNode<T> extends Node<T> {
   next: this;
